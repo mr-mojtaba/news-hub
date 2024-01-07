@@ -5,6 +5,22 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+# Managers
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.Status.PUBLISHED)
+
+
+class DraftManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.Status.DRAFT)
+
+
+class RejectedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status=Post.Status.REJECTED)
+
+
 # Create your models here.
 class Post(models.Model):
     # Creating a class for posts status.
@@ -40,6 +56,13 @@ class Post(models.Model):
         choices=Status.choices,
         default=Status.DRAFT
     )
+
+    # Keeping the default manager(objects).
+    objects = models.Manager()
+    # Create object from PublishedManager.
+    published = PublishedManager()
+    draft = DraftManager()
+    rejected = RejectedManager()
 
     class Meta:
         # Sorting the table by publish.
