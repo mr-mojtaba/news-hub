@@ -59,7 +59,8 @@ class Post(models.Model):
 
     # Keeping the default manager(objects).
     objects = models.Manager()
-    # Create object from PublishedManager.
+
+    # Create customize managers.
     published = PublishedManager()
     draft = DraftManager()
     rejected = RejectedManager()
