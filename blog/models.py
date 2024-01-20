@@ -4,6 +4,9 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+# Need to install ( pip install django_jalali )
+from django_jalali.db import models as jmodels
+
 
 # Managers
 class PublishedManager(models.Manager):
@@ -33,32 +36,50 @@ class Post(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='user_posts'
+        related_name='user_posts',
+        verbose_name="نویسنده"
     )
 
     # To create fields.
-    title = models.CharField(max_length=250)
-    description = models.TextField()
-    slug = models.SlugField(max_length=250)
+    title = models.CharField(
+        max_length=250,
+        verbose_name="عنوان"
+    )
+    description = models.TextField(
+        verbose_name="توضیحات"
+    )
+
+    slug = models.SlugField(
+        max_length=250,
+        verbose_name="نامک"
+    )
 
     # Date of publication.
-    publish = models.DateTimeField(default=timezone.now)
+    publish = jmodels.jDateTimeField(
+        default=timezone.now,
+        verbose_name="تاریخ انتشار"
+    )
 
     # Recording the moment the post was created.
-    created = models.DateTimeField(auto_now_add=True)
+    created = jmodels.jDateTimeField(
+        auto_now_add=True
+    )
 
     # Date of update.
-    update = models.DateTimeField(auto_now=True)
+    update = jmodels.jDateTimeField(
+        auto_now=True
+    )
 
     # Creating a field for Status class.
     status = models.CharField(
         max_length=250,
         choices=Status.choices,
-        default=Status.DRAFT
+        default=Status.DRAFT,
+        verbose_name="وضعیت"
     )
 
     # Keeping the default manager(objects).
-    objects = models.Manager()
+    objects = jmodels.jManager()
 
     # Create customize managers.
     published = PublishedManager()
@@ -72,6 +93,8 @@ class Post(models.Model):
         indexes = [
             models.Index(fields=['-publish'])
         ]
+        verbose_name = "پست"
+        verbose_name_plural = "پست ها"
 
     # Overwriting the method as the title.
     def __str__(self):

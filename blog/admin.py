@@ -3,6 +3,14 @@ from django.contrib import admin
 # For customization of the admin panel
 from .models import *
 
+# Need to install ( pip install django_jalali )
+from django_jalali.admin.filters import JDateFieldListFilter
+import django_jalali.admin as jadmin
+
+admin.sites.AdminSite.site_header = "پنل مدیریت جنگو"
+admin.sites.AdminSite.site_title = "پنل"
+admin.sites.AdminSite.index_title = "پنل مدیریت"
+
 
 # Register your models here.
 # Customization of the admin panel.
@@ -18,7 +26,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'description']
 
     # Creating a filter page and a list of filterable fields.
-    list_filter = ['status', 'author', 'publish']
+    list_filter = ['status', 'author', ('publish', JDateFieldListFilter)]
 
     # Assigning an ID to each author and
     # changing the type of author editing in the post manager.
