@@ -1,12 +1,19 @@
 {% extends 'parent/base.html' %}
 {% block title %}Post List{% endblock %}
+
 {% block content %}
-    {% for post in posts %}
-        <h3>
-            <a href="{{post.get_absolute_url}}">{{ post.title }}</a>
-        </h3>
-        <p>
-            {{ post.description | truncatewords:5 }}
-        </p>
-    {% endfor %}
+    <h1>Post List:</h1>
+
+    <ol style="--length:{{posts.count}}" role="list">
+        {% for post in posts %}
+            <li style="--i:{{forloop.counter}}">
+                <h3>
+                    <a href="{{post.get_absolute_url}}">{{ post.title }}</a>
+                </h3>
+                <p>
+                    {{ post.description | truncatewords:5 }}
+                </p>
+            </li>
+        {% endfor %}
+    </ol>
 {% endblock %}
