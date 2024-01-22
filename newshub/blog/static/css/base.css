@@ -16,10 +16,11 @@ body {
 h1 {
     width: 350px;
     height: 70px;
-    background-color: #A92424;
-    color: aliceblue;
+    background-color: #FFFFFF;
+    color: #A92424;
     text-align: center;
-    border-bottom: 5px solid #C44D1A;
+    border-top: 5px solid #A92424;
+    border-bottom: 5px solid #A92424;
     border-radius: 10px;
     margin: 20px auto;
     padding: 10px;
@@ -102,4 +103,9 @@ h3::before {
 	h3::before {
 		margin-right: 1.5rem;
 	}
+}
+
+.pagination{
+    width: 400px;
+    margin: 0 auto
 }
