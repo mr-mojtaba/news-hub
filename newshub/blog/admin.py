@@ -43,3 +43,8 @@ class PostAdmin(admin.ModelAdmin):
 
     # Converting each field to a link for opening the post manager page.
     list_display_links = ['title', 'author', 'publish']
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ['name', 'subject', 'phone']
