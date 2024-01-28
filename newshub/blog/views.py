@@ -10,14 +10,6 @@ def index(request):
     return HttpResponse('Index')
 
 
-def post_detail(request, id):
-    post = get_object_or_404(Post, id=id, status=Post.Status.PUBLISHED)
-    context = {
-        'post': post,
-    }
-    return render(request, "blog/detail.html", context)
-
-
 class PostListView(ListView):
     # Returns published posts.
     queryset = Post.published.all()
