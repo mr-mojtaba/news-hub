@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404
 from .models import *
 from .forms import *
 from django.views.generic import ListView, DetailView
+from django.views.decorators.http import require_POST
 
 
 # Create your views here.
@@ -53,3 +54,28 @@ def ticket(request):
 
     # Show ticket.html page.
     return render(request, 'forms/ticket.html', {'form': form})
+
+
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+        status=Post.Status.PUBLISHED
+    )
+    comment = None
+    form = CommentForm(data=require_POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.save()
+    context = {
+        'post': post,
+        'form': form,
+        'comment': comment,
+    }
+    return render(
+        request,
+        "forms/comment.html",
+        context,
+    )
