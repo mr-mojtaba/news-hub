@@ -55,4 +55,21 @@
         <input type="submit" value="ثبت تیکت">
     </form>
 
+    {% if form.errors %}
+        <h5>لطفا خطاهای زیر را اصلاح کنید!</h5>
+        <br>
+        {% for field in form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    {{ field.label }}: {{ error }}
+                    <br>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endif%}
+
+    {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+    {% endif %}
+
 {% endblock %}
