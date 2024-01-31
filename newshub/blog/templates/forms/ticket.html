@@ -4,7 +4,55 @@
 {% block content %}
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <label for="name">نام و نام خانوادگی :</label>
+        <input type="text" name="name" id="name" required
+               {% if form.name.value %} value="{{ form.name.value }}" {% endif %}>
+        <br>
+
+        <label for="phone">شماره تماس :</label>
+        <input type="text" name="phone" id="phone" maxlength="11" required
+               {% if form.phone.value %} value="{{ form.phone.value }}" {% endif %}>
+        <br>
+
+        <label for="email">آدرس ایمیل :</label>
+        <input type="email" name="email" id="email"
+               {% if form.email.value %} value="{{ form.email.value }}" {% endif %}>
+        <br>
+
+        <label for="subject">موضوع :</label>
+        <select name="subject" id="subject">
+            <option value="پیشنهاد"
+                {% if form.subject.value == "پیشنهاد" %}
+                    selected
+                {% endif %}
+                >
+                پیشنهاد
+            </option>
+
+            <option value="انتقاد"
+                {% if form.subject.value == "انتقاد" %}
+                    selected
+                {% endif %}
+                >
+                انتقاد
+            </option>
+
+            <option value="گزارش"
+                {% if form.subject.value == "گزارش" %}
+                    selected
+                {% endif %}
+                >
+                گزارش
+            </option>
+        </select>
+        <br>
+
+        <label for="message">پیام :</label>
+        <textarea name="message" id="message">{% if form.message.value %}{{ form.message.value }}{% endif %}</textarea>
+        <br>
+
         <input type="submit" value="ثبت تیکت">
     </form>
+
 {% endblock %}
