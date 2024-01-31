@@ -22,9 +22,30 @@ class PostListView(ListView):
     template_name = "blog/list.html"
 
 
-class PostDetailView(DetailView):
-    model = Post
-    template_name = "blog/detail.html"
+def post_detail(request, id):
+    post = get_object_or_404(
+        Post,
+        id=id,
+        status=Post.Status.PUBLISHED
+    )
+
+    # Creating a variable and put the approved comments in it.
+    comments = post.comments.filter(active=True)
+
+    # Creating an empty form.
+    form = CommentForm()
+
+    context = {
+        'post': post,
+        'form': form,
+        'comments': comments,
+    }
+
+    return render(
+        request,
+        "blog/detail.html",
+        context
+    )
 
 
 def ticket(request):
