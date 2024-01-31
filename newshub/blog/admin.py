@@ -48,3 +48,32 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ['name', 'subject', 'phone']
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    # Showing these fields in the top bar of the posts display.
+    list_display = [
+        'post',
+        'name',
+        'created',
+        'active',
+    ]
+
+    # Creating a filter page and a list of filterable fields.
+    list_filter = [
+        'active',
+        ('created', JDateFieldListFilter),
+        ('updated', JDateFieldListFilter),
+    ]
+
+    # Creating a search bar and a list of searchable fields.
+    search_fields = [
+        'name',
+        'body',
+    ]
+
+    # Creating the ability to edit each field in the table.
+    list_editable = [
+        'active'
+    ]
