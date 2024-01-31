@@ -33,23 +33,19 @@ def ticket(request):
 
         # Form data validation.
         if form.is_valid():
-            # Creating an object from the Ticket model.
-            ticket_obj = Ticket.objects.create()
-
             # Creating a variable and assigning it with form values.
             # (cleaned_data is a dictionary).
             cd = form.cleaned_data
 
-            #  Initialization of each Ticket field with the values of each Ticket Form field.
-            ticket_obj.message = cd['message']
-            ticket_obj.name = cd['name']
-            ticket_obj.email = cd['email']
-            ticket_obj.phone = cd['phone']
-            ticket_obj.subject = cd['subject']
-
-            # Storage in the database.
-            ticket_obj.save()
-
+            # Creating a tuple from the Ticket model.
+            Ticket.objects.create(
+                #  Initialization of each Ticket field with the values of each Ticket Form field.
+                message=cd['message'],
+                name=cd['name'],
+                email=cd['email'],
+                phone=cd['phone'],
+                subject=cd['subject'],
+            )
             return redirect('blog:ticket')
     else:
         # Creating a variable from TicketForm with no value.
