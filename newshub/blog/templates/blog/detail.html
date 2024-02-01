@@ -21,7 +21,7 @@
                 <br>
                 <hr>
                 {{ cm.name }}
-                {{cm.body | linebreaks }}
+                {{ cm.body | linebreaks }}
                 <hr>
             {% empty %}
                 کامنتی وجود ندارد!
@@ -31,7 +31,7 @@
 
     <form method="post" action="{% url 'blog:post_comment' post.id %}">
         {% csrf_token %}
-        {% form.as_p %}
+        {{ form.as_p }}
         <input type="submit" value="افزودن کامنت">
     </form>
 {% endblock %}
