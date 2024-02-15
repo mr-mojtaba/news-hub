@@ -16,4 +16,4 @@ def total_comments():
 
 @register.simple_tag
 def last_post_date():
-    return Post.published.first().publish
+    return Post.published.first().publish.strftime('%H:%M - %Y/%m/%d')
