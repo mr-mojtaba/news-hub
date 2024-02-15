@@ -1,8 +1,14 @@
 {% extends "parent/base.html" %}
+{% load blog_tags %}
 {% block title %}NewsHub{% endblock %}
 
 {% block content %}
-    <p>تعداد پست ها:</p>
-    <p>تعداد کامنت ها:</p>
-    <p>تاریخ آخرین پست:</p>
+    <p>تعداد پست ها: {% total_posts %}</p>
+    <p>تعداد کامنت ها: {% total_comments %}</p>
+
+    <br>
+
+    <p>تاریخ آخرین پست:
+        {% last_post_date %}
+    </p>
 {% endblock %}
