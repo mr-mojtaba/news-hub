@@ -14,4 +14,18 @@
 
     <h2>:آخرین پست ها</h2>
     {% latest_posts 3 %}
+
+    <br>
+
+    <h2>:محبوب ترین پست ها</h2>
+    {% most_popular_posts 3 as pop_posts %}
+        {% for post in pop_posts %}
+            <a href="{{ post.get_absolute_url }}">
+                با
+                {{ post.comments_count }}
+                کامنت
+                :{{post.title}}
+            </a>
+            <br>
+        {% endfor %}
 {% endblock %}
