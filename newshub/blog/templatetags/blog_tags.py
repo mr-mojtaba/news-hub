@@ -23,8 +23,8 @@ def last_post_date():
 @register.simple_tag
 def most_popular_posts(count=5):
     return Post.published.annotate(
-        comment_count=Count('comments')
-    ).order_by('-comment_count')[:count]
+        comments_count=Count('comments')
+    ).order_by('-comments_count')[:count]
 
 
 @register.inclusion_tag("partials/latest_posts.html")
