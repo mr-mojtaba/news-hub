@@ -38,37 +38,37 @@ class Post(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='user_posts',
-        verbose_name="نویسنده"
+        verbose_name="نویسنده",
     )
 
     # To create fields.
     title = models.CharField(
         max_length=250,
-        verbose_name="عنوان"
+        verbose_name="عنوان",
     )
     description = models.TextField(
-        verbose_name="توضیحات"
+        verbose_name="توضیحات",
     )
 
     slug = models.SlugField(
         max_length=250,
-        verbose_name="نامک"
+        verbose_name="نامک",
     )
 
     # Date of publication.
     publish = jmodels.jDateTimeField(
         default=timezone.now,
-        verbose_name="تاریخ انتشار"
+        verbose_name="تاریخ انتشار",
     )
 
     # Recording the moment the post was created.
     created = jmodels.jDateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
 
     # Date of update.
     update = jmodels.jDateTimeField(
-        auto_now=True
+        auto_now=True,
     )
 
     # Creating a field for Status class.
@@ -76,7 +76,11 @@ class Post(models.Model):
         max_length=250,
         choices=Status.choices,
         default=Status.DRAFT,
-        verbose_name="وضعیت"
+        verbose_name="وضعیت",
+    )
+
+    reading_time = models.PositiveIntegerField(
+        verbose_name= "زمان مطالعه",
     )
 
     # Keeping the default manager(objects).
@@ -107,11 +111,28 @@ class Post(models.Model):
 
 
 class Ticket(models.Model):
-    message = models.TextField(verbose_name="پیام")
-    name = models.CharField(max_length=250, verbose_name="نام")
-    email = models.EmailField(verbose_name="ایمیل")
-    phone = models.CharField(max_length=11, verbose_name="شماره تماس")
-    subject = models.CharField(max_length=250, verbose_name="موضوع")
+    message = models.TextField(
+        verbose_name="پیام",
+    )
+
+    name = models.CharField(
+        max_length=250,
+        verbose_name="نام",
+    )
+
+    email = models.EmailField(
+        verbose_name="ایمیل",
+    )
+
+    phone = models.CharField(
+        max_length=11,
+        verbose_name="شماره تماس",
+    )
+
+    subject = models.CharField(
+        max_length=250,
+        verbose_name="موضوع",
+    )
 
     class Meta:
         verbose_name = "تیکت"
