@@ -12,6 +12,55 @@
         {% last_post_date %}
     </p>
 
+    <br>
+
+    <p>
+        بیشترین زمان مطالعه:
+        {% most_reading_time_post as most_read_post %}
+            {% if most_read_post %}
+                <a href="{{ most_read_post.link }}">{{ most_read_post.name }}</a>
+            {% else %}
+                No most reading time post found.
+            {% endif %}
+            با
+            {% most_reading_time %}
+            دقیقه
+    </p>
+
+
+    <p>
+        کمترین زمان مطالعه:
+        {% least_reading_time_post as least_read_post %}
+            {% if least_read_post %}
+                <a href="{{ least_read_post.link }}">{{ least_read_post.name }}</a>
+            {% else %}
+                No least reading time post found.
+            {% endif %}
+            با
+            {% least_reading_time %}
+            دقیقه
+    </p>
+
+
+    {% most_active_users as most_active_users %}
+        {% if most_active_users %}
+            <h2>فعال ترین کاربران:</h2>
+            <ul>
+                {% for user in most_active_users %}
+                    <li>
+                        {{ user.username }}
+                        :کاربر
+                        <br>
+                        تعداد پست ها:
+                        {{ user.user_posts.count }}
+                        پست
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No users found.</p>
+        {% endif %}
+
     <h2>:آخرین پست ها</h2>
     {% latest_posts 3 %}
 
