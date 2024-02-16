@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment
+from .models import Comment, Post
 
 
 class TicketForm(forms.Form):
@@ -38,4 +38,19 @@ class CommentForm(forms.ModelForm):
         fields = [
             'name',
             'body',
+        ]
+
+        widgets = {
+            'author': forms.HiddenInput(),
+        }
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = [
+            'title',
+            'description',
+            'slug',
+            'reading_time',
         ]
