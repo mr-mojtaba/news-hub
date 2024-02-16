@@ -42,6 +42,11 @@
     </p>
 
 
+    <h4><a href="{% url 'blog:create_post' %}">ایجاد پست</a></h4>
+
+    <h4><a href="{% url 'blog:ticket' %}">ایجاد تیکت</a></h4>
+
+
     {% most_active_users as most_active_users %}
         {% if most_active_users %}
             <h2>فعال ترین کاربران:</h2>
@@ -77,4 +82,7 @@
             </a>
             <br>
         {% endfor %}
+
+    <br>
+
 {% endblock %}
