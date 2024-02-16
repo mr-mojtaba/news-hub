@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "parent/base.html" %}
+{% load jformat %}
+{% block title %}Create POST{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <BUTTON type="submit">افزودن پست</BUTTON>
+    </form>
+{% endblock %}
