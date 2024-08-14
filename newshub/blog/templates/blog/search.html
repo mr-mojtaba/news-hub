@@ -1,0 +1,10 @@
+{% extends "parent/base.html" %}
+{% block title %}Post Search{% endblock %}
+
+{% block content %}
+    {% for post in results %}
+        <a href="{{ get_absolute_url }}">{{ post.title }}</a>
+    {% empty %}
+        هیچ نتیجه ای یافت نشد!
+    {% endfor %}
+{% endblock %}
