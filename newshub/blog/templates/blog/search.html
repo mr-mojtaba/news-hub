@@ -2,8 +2,13 @@
 {% block title %}Post Search{% endblock %}
 
 {% block content %}
+    {% if query %}
+        نتایج جستجو برای '{{ query }}' در پست ها {{ results.count }} تا پیدا شد.
+    {% endif %}
+    <br>
     {% for post in results %}
-        <a href="{{ get_absolute_url }}">{{ post.title }}</a>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        <p>{{ post.description }}</p>
     {% empty %}
         هیچ نتیجه ای یافت نشد!
     {% endfor %}
