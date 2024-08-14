@@ -141,5 +141,5 @@ def post_search(request):
         if form.is_valid():
             query = form.cleaned_data['query']
             results = Post.published.filter(description__icontains=query)
-        context = {'query': query, 'results':results}
+        context = {'query': query, 'results': results}
         return render(request, 'blog/search.html', context)
