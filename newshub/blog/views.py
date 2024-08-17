@@ -5,8 +5,7 @@ from .forms import *
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 
 # Create your views here.
@@ -142,6 +141,22 @@ def post_search(request):
         form = SearchForm(data=request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = Post.published.annotate(search=SearchVector('title', 'description')).filter(search=query)
+            search_query = SearchQuery(query)
+
+            search_vector = (
+                SearchVector('title', weight='A',)
+                + SearchVector('description', weight='B',)
+            )
+
+            search_rank = SearchRank(search_vector, search_query)
+
+            results = Post.published.annotate(
+                search=search_vector,
+                rank=search_rank,
+            ).filter(
+                search=search_query
+            ).order_by(
+                '-rank',
+            )
         context = {'query': query, 'results': results}
         return render(request, 'blog/search.html', context)
