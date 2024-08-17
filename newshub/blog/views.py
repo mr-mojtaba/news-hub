@@ -5,7 +5,7 @@ from .forms import *
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 # Create your views here.
@@ -141,22 +141,28 @@ def post_search(request):
         form = SearchForm(data=request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            search_query = SearchQuery(query)
 
-            search_vector = (
-                SearchVector('title', weight='A',)
-                + SearchVector('description', weight='B',)
-            )
-
-            search_rank = SearchRank(search_vector, search_query)
-
-            results = Post.published.annotate(
-                search=search_vector,
-                rank=search_rank,
+            results1 = Post.published.annotate(
+                similarity=TrigramSimilarity('title', query)
             ).filter(
-                search=search_query
+                similarity__gt=0.1
             ).order_by(
-                '-rank',
+                '-similarity'
             )
+
+            results2 = Post.published.annotate(
+                similarity=TrigramSimilarity('description', query)
+            ).filter(
+                similarity__gt=0.1
+            ).order_by(
+                '-similarity'
+            )
+
+            results = (
+                    results1 | results2
+            ).order_by(
+                '-similarity'
+            )
+
         context = {'query': query, 'results': results}
         return render(request, 'blog/search.html', context)
