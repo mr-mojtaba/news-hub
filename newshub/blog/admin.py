@@ -77,3 +77,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_editable = [
         'active'
     ]
+
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    list_display = [
+        'post',
+        'title',
+    ]
