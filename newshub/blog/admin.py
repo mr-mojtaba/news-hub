@@ -14,6 +14,23 @@ admin.sites.AdminSite.index_title = "پنل مدیریت"
 
 # Register your models here.
 # Customization of the admin panel.
+
+#Inlines
+class ImageInline(admin.StackedInline):
+    model = Image
+    extra = 0
+
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+    extra = 0
+    readonly_fields = (
+        'name',
+        'body',
+        'created',
+    )
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     # Showing these fields in the top bar of the posts display.
@@ -43,6 +60,8 @@ class PostAdmin(admin.ModelAdmin):
 
     # Converting each field to a link for opening the post manager page.
     list_display_links = ['title', 'author', 'publish']
+
+    inlines = [ImageInline, CommentInline]
 
 
 @admin.register(Ticket)
