@@ -7,6 +7,7 @@ from django.urls import reverse
 
 # Need to install ( pip install django_jalali )
 from django_jalali.db import models as jmodels
+import jdatetime
 
 # Need to install ( pip install django_resized )
 from django_resized import ResizedImageField
@@ -14,6 +15,16 @@ from django_resized import ResizedImageField
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 import os
+
+
+# To determine the year of the image folder name.
+def get_upload_to(instance, filename):
+    # Check if created has a value, otherwise use the current year
+    if instance.created:
+        year = instance.created.year
+    else:
+        year = jdatetime.datetime.now().year
+    return f'post_images/{year}/{filename}'
 
 
 # Managers
@@ -200,7 +211,7 @@ class Image(models.Model):
     )
 
     image_file = ResizedImageField(
-        upload_to='post_image/',
+        upload_to=get_upload_to,
         size=[500, 500],
         quality=75,
         crop=['middle', 'center'],
