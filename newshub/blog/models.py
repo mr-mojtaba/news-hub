@@ -8,6 +8,9 @@ from django.urls import reverse
 # Need to install ( pip install django_jalali )
 from django_jalali.db import models as jmodels
 
+# Need to install ( pip install django_resized )
+from django_resized import ResizedImageField
+
 
 # Managers
 class PublishedManager(models.Manager):
@@ -192,8 +195,12 @@ class Image(models.Model):
         verbose_name='پست',
     )
 
-    image_file = models.ImageField(
+    image_file = ResizedImageField(
         upload_to='post_image/',
+        size=[500, 500],
+        quality=75,
+        crop=['middle', 'center'],
+        verbose_name='تصویر',
     )
 
     title = models.CharField(
