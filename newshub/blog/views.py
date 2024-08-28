@@ -158,11 +158,46 @@ def post_search(request):
                 '-similarity'
             )
 
-            results = (
-                    results1 | results2
+            image_results1 = Image.objects.annotate(
+                similarity=TrigramSimilarity('title', query)
+            ).filter(
+                similarity__gt=0.1
             ).order_by(
                 '-similarity'
             )
 
-        context = {'query': query, 'results': results}
-        return render(request, 'blog/search.html', context)
+            image_results2 = Image.objects.annotate(
+                similarity=TrigramSimilarity('description', query)
+            ).filter(
+                similarity__gt=0.1
+            ).order_by(
+                '-similarity'
+            )
+
+            # Combine results: for images, get the related post
+            post_results_from_image1 = [img.post for img in image_results1]
+            post_results_from_image2 = [img.post for img in image_results2]
+
+            # Combine results
+            combined_results = (
+                    list(results1)
+                    + list(results2)
+                    + post_results_from_image1
+                    + post_results_from_image2
+            )
+
+            results = sorted(
+                set(combined_results),
+                key=lambda x: x.similarity if hasattr(x, 'similarity') else 0,
+                reverse=True
+            )
+
+        context = {
+            'query': query,
+            'results': results
+        }
+        return render(
+            request,
+            'blog/search.html',
+            context
+        )
