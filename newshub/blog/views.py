@@ -8,33 +8,38 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import TrigramSimilarity
 
 
-# Create your views here.
+# View to render the index page.
 def index(request):
-    return render(request, "blog/index.html")
+    return render(
+        request,
+        "blog/index.html",
+    )
 
 
 class PostListView(ListView):
-    # Returns published posts.
+    # Returns all published posts.
     queryset = Post.published.all()
 
-    # Defining name for the object.
+    # Defines the context variable name for the list of posts.
     context_object_name = "posts"
 
+    # Sets the number of posts per page for pagination
     paginate_by = 3
     template_name = "blog/list.html"
 
 
 def post_detail(request, id):
+    # Retrieve the post by id, raising a 404 error if not found or not published.
     post = get_object_or_404(
         Post,
         id=id,
-        status=Post.Status.PUBLISHED
+        status=Post.Status.PUBLISHED,
     )
 
-    # Creating a variable and put the approved comments in it.
+    # Filter and retrieve active comments related to the post.
     comments = post.comments.filter(active=True)
 
-    # Creating an empty form.
+    # Initialize an empty comment form.
     form = CommentForm()
 
     context = {
@@ -43,6 +48,7 @@ def post_detail(request, id):
         'comments': comments,
     }
 
+    # Render the post detail page with the post, comments, and form.
     return render(
         request,
         "blog/detail.html",
@@ -52,16 +58,15 @@ def post_detail(request, id):
 
 def ticket(request):
     if request.method == "POST":
-        # Creating a Variable from the TicketForm.
+        # Initialize the form with POST data.
         form = TicketForm(request.POST)
 
-        # Form data validation.
+        # Validate the form data.
         if form.is_valid():
-            # Creating a variable and assigning it with form values.
-            # (cleaned_data is a dictionary).
+            # Cleaned data is a dictionary containing form values.
             cd = form.cleaned_data
 
-            # Creating a tuple from the Ticket model.
+            # Create a new Ticket object using the cleaned data.
             Ticket.objects.create(
                 #  Initialization of each Ticket field with the values of each Ticket Form field.
                 message=cd['message'],
@@ -70,12 +75,13 @@ def ticket(request):
                 phone=cd['phone'],
                 subject=cd['subject'],
             )
+            # Redirect to the ticket page after saving.
             return redirect('blog:ticket')
     else:
-        # Creating a variable from TicketForm with no value.
+        # Initialize an empty form.
         form = TicketForm()
 
-    # Show ticket.html page.
+    # Render the ticket form page.
     return render(
         request,
         'forms/ticket.html',
@@ -85,6 +91,7 @@ def ticket(request):
 
 @require_POST
 def post_comment(request, post_id):
+    # Retrieve the post by id, raising a 404 error if not found or not published.
     post = get_object_or_404(
         Post,
         id=post_id,
@@ -93,11 +100,16 @@ def post_comment(request, post_id):
 
     comment = None
 
+    # Initialize the comment form with POST data.
     form = CommentForm(data=request.POST)
 
+    # If the form is valid, save the comment without committing.
     if form.is_valid():
+        # Save the comment without committing
         comment = form.save(commit=False)
+        # Associate the comment with the post.
         comment.post = post
+        # Save the comment to the database.
         comment.save()
 
     context = {
@@ -106,6 +118,7 @@ def post_comment(request, post_id):
         'comment': comment,
     }
 
+    # Render the comment form and related post information.
     return render(
         request,
         "forms/comment.html",
@@ -116,20 +129,28 @@ def post_comment(request, post_id):
 @login_required(login_url='/admin/login/')
 def create_post(request):
     if request.method == 'POST':
+        # Initialize the form with POST data.
         form = PostForm(request.POST)
 
+        # Validate the form data.
         if form.is_valid():
+            # Save the post without committing.
             post = form.save(commit=False)
+            # Assign the current user as the author of the post.
             post.author = request.user
+            # Save the post to the database.
             post.save()
+            # Reinitialize the form after saving.
             form = PostForm
     else:
+        # Initialize an empty form.
         form = PostForm()
 
+    # Render the post creation form page.
     return render(
         request,
         'forms/create_post.html',
-        {'form': form}
+        {'form': form},
     )
 
 
@@ -138,47 +159,53 @@ def post_search(request):
     results = []
 
     if 'query' in request.GET:
+        # Initialize the search form with GET data.
         form = SearchForm(data=request.GET)
         if form.is_valid():
+            # Get the cleaned search query.
             query = form.cleaned_data['query']
 
+            # Search for posts with similar titles
             results1 = Post.published.annotate(
-                similarity=TrigramSimilarity('title', query)
+                similarity=TrigramSimilarity('title', query),
             ).filter(
-                similarity__gt=0.1
+                similarity__gt=0.1,
             ).order_by(
-                '-similarity'
+                '-similarity',
             )
 
+            # Search for posts with similar descriptions.
             results2 = Post.published.annotate(
-                similarity=TrigramSimilarity('description', query)
+                similarity=TrigramSimilarity('description', query),
             ).filter(
-                similarity__gt=0.1
+                similarity__gt=0.1,
             ).order_by(
-                '-similarity'
+                '-similarity',
             )
 
+            # Search for images with similar titles.
             image_results1 = Image.objects.annotate(
-                similarity=TrigramSimilarity('title', query)
+                similarity=TrigramSimilarity('title', query),
             ).filter(
-                similarity__gt=0.1
+                similarity__gt=0.1,
             ).order_by(
-                '-similarity'
+                '-similarity',
             )
 
+            # Search for images with similar descriptions.
             image_results2 = Image.objects.annotate(
-                similarity=TrigramSimilarity('description', query)
+                similarity=TrigramSimilarity('description', query),
             ).filter(
-                similarity__gt=0.1
+                similarity__gt=0.1,
             ).order_by(
-                '-similarity'
+                '-similarity',
             )
 
-            # Combine results: for images, get the related post
+            # Get the related posts for images matching the search query.
             post_results_from_image1 = [img.post for img in image_results1]
             post_results_from_image2 = [img.post for img in image_results2]
 
-            # Combine results
+            # Combine all search results into one list.
             combined_results = (
                     list(results1)
                     + list(results2)
@@ -186,18 +213,21 @@ def post_search(request):
                     + post_results_from_image2
             )
 
+            # Sort and remove duplicates from the combined results based on similarity.
             results = sorted(
                 set(combined_results),
                 key=lambda x: x.similarity if hasattr(x, 'similarity') else 0,
-                reverse=True
+                reverse=True,
             )
 
         context = {
             'query': query,
-            'results': results
+            'results': results,
         }
+
+        # Render the search results page.
         return render(
             request,
             'blog/search.html',
-            context
+            context,
         )
