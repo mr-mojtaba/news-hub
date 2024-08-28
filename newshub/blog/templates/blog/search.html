@@ -3,7 +3,8 @@
 
 {% block content %}
     {% if query %}
-        نتایج جستجو برای '{{ query }}' در پست ها {{ results.count }} تا پیدا شد.
+        '{{ query }}'
+        نتایج جستجو برای
     {% endif %}
     <br>
     {% for post in results %}
