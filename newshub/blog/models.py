@@ -80,12 +80,14 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='user_posts',
         verbose_name="نویسنده",
+        help_text='',
     )
 
     title = models.CharField(
         max_length=250,
         verbose_name="عنوان",
     )
+
     description = models.TextField(
         verbose_name="توضیحات",
     )
@@ -141,7 +143,6 @@ class Post(models.Model):
         verbose_name = "پست"
         verbose_name_plural = "پست ها"
 
-    # String representation of the post.
     def __str__(self):
         """
         String representation of the Post model.
@@ -203,8 +204,10 @@ class Comment(models.Model):
     """
 
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE,
+        Post,
+        on_delete=models.CASCADE,
         related_name="comments",
+        verbose_name="پست",
     )
 
     name = models.CharField(
@@ -256,6 +259,7 @@ class Image(models.Model):
     """
     Model representing an image associated with a blog post.
     """
+
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -297,10 +301,12 @@ class Image(models.Model):
         ordering = [
             'created',
         ]
+
         # Indexing for faster queries on creation date.
         indexes = [
             models.Index(fields=['created'])
         ]
+
         verbose_name = 'تصویر'
         verbose_name_plural = 'تصاویر'
 
@@ -311,7 +317,7 @@ class Image(models.Model):
         return self.title if self.title else self.image_file.name
 
 
-# Signal to delete the image file after the object is deleted
+# Signal to delete the image file after the object is deleted.
 @receiver(post_delete, sender=Image)
 def delete_image_file_on_delete(sender, instance, **kwargs):
     """

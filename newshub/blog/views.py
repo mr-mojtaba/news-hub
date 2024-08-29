@@ -75,6 +75,7 @@ def ticket(request):
                 phone=cd['phone'],
                 subject=cd['subject'],
             )
+
             # Redirect to the ticket page after saving.
             return redirect('blog:ticket')
     else:
@@ -105,7 +106,7 @@ def post_comment(request, post_id):
 
     # If the form is valid, save the comment without committing.
     if form.is_valid():
-        # Save the comment without committing
+        # Save the comment without committing.
         comment = form.save(commit=False)
         # Associate the comment with the post.
         comment.post = post
@@ -160,7 +161,10 @@ def post_search(request):
 
     if 'query' in request.GET:
         # Initialize the search form with GET data.
-        form = SearchForm(data=request.GET)
+        form = SearchForm(
+            data=request.GET,
+        )
+
         if form.is_valid():
             # Get the cleaned search query.
             query = form.cleaned_data['query']

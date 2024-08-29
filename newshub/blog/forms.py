@@ -62,8 +62,14 @@ class CommentForm(forms.ModelForm):
         ]
 
         widgets = {
-            # Hides the author field from the form interface.
-            'author': forms.HiddenInput(),
+            'name': forms.TextInput(attrs={
+                'placeholder': 'نام و نام خانوادگی',
+                'class': 'cm-name',
+            }),
+            'body': forms.TextInput(attrs={
+                'placeholder': 'متن',
+                'class': 'cm-body',
+            }),
         }
 
 
@@ -85,6 +91,11 @@ class PostForm(forms.ModelForm):
             'slug',
             'reading_time',
         ]
+
+        widgets = {
+            # Hides the author field from the form interface.
+            'author': forms.HiddenInput(),
+        }
 
 
 class SearchForm(forms.Form):
