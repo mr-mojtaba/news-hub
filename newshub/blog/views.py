@@ -235,3 +235,19 @@ def post_search(request):
             'blog/search.html',
             context,
         )
+
+
+@login_required(login_url='/admin/login/')
+def profile(request):
+    user = request.user
+    posts = Post.published.filter(author=user)
+
+    context = {
+        'posts': posts,
+    }
+
+    return render(
+        request,
+        'blog/profile.html',
+        context,
+    )
