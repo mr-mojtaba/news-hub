@@ -18,6 +18,8 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 import os
 
+from django.template.defaultfilters import slugify
+
 
 def get_upload_to(instance, filename):
     """
@@ -154,6 +156,11 @@ class Post(models.Model):
         Method to get the URL for the post detail view.
         """
         return reverse('blog:post_detail', args=[self.id])
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 
 class Ticket(models.Model):

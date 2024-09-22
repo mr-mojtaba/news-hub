@@ -73,10 +73,12 @@ class CommentForm(forms.ModelForm):
         }
 
 
-class PostForm(forms.ModelForm):
+class CreatePostForm(forms.ModelForm):
     """
     Form for creating and updating posts.
     """
+    image1 = forms.ImageField(label='تصویر اول')
+    image2 = forms.ImageField(label='تصویر دوم')
 
     class Meta:
         """
@@ -91,11 +93,6 @@ class PostForm(forms.ModelForm):
             'slug',
             'reading_time',
         ]
-
-        widgets = {
-            # Hides the author field from the form interface.
-            'author': forms.HiddenInput(),
-        }
 
 
 class SearchForm(forms.Form):
