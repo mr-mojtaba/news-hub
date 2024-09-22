@@ -275,3 +275,53 @@ def delete_post(request, post_id):
         'forms/delete-post.html',
         {'post': post},
     )
+
+
+@login_required(login_url='/admin/login/')
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == 'POST':
+        form = CreatePostForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+
+            Image.objects.create(
+                image_file=form.cleaned_data['image1'],
+                post=post,
+            )
+            Image.objects.create(
+                image_file=form.cleaned_data['image2'],
+                post=post,
+            )
+            return redirect('blog:profile')
+    else:
+        form = CreatePostForm(instance=post)
+
+    context = {
+        'form': form,
+        'post': post,
+    }
+
+    return render(
+        request,
+        'forms/edit-post.html',
+        context,
+    )
+
+
+def delete_image(request, image_id, post_id):
+    image = get_object_or_404(Image, id=image_id)
+
+    if request.method == 'POST':
+        image.delete()
+        return redirect('blog:edit_post', post_id=post_id)
+
+    return render(
+        request,
+        'forms/delete-image.html',
+        {'image': image}
+    )

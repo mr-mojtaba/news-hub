@@ -1,0 +1,19 @@
+{% extends 'parent/base.html' %}
+{% load jformat %}
+{% block title %}Delete Image{% endblock %}
+
+{% block content %}
+    <h2>
+        آیا از حذف تصویر
+        {{ image.title }}
+        اطمینان دارید؟
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="حذف">
+    </form>
+    <br>
+
+    <a href="{% url 'blog:profile' %}">برگشت به صفحه پروفایل</a>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "parent/base.html" %}
+{% load jformat %}
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="ذخیره">
+        <br>
+
+        {% if post.images %}
+            <p>
+                تصاویر:
+            </p>
+            {% for img in post.images.all %}
+                <img width="300px" height="200px" src="{{ img.image_file.url }}" alt="{{ img.title }}">
+                <a href="{% url 'blog:delete_image' img.post_id img.id %}">حذف تصویر</a>
+                <br>
+            {% endfor %}
+        {% endif %}
+    </form>
+
+    {% if form.errors %}
+        <h5>لطفا خطاهای زیر را اصلاح کنید!</h5>
+        <br>
+        {% for field in form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    {{ field.label }} : {{ error }}
+                    <br>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+    {% endif %}
+{% endblock %}
