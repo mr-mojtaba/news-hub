@@ -1,0 +1,20 @@
+{% extends "parent/base.html" %}
+{% load jformat %}
+{% block title %}Ticket Form{% endblock %}
+
+{% block content %}
+    <h2>
+        آیا از حذف
+        {{ post.title }}
+        اطمینان دارید؟
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="حذف">
+    </form>
+
+    <br>
+
+    <a href="{% url 'blog:profile' %}">برگشت به صفحه پروفایل</a>
+{% endblock %}

@@ -161,6 +161,12 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        
+    def delete(self, *args, **kwargs):
+        for img in self.images.all():
+            storage, path = img.image_file.storage, img.image_file.path
+            storage.delete(path)
+        super().delete(*args, **kwargs)
 
 
 class Ticket(models.Model):
@@ -325,11 +331,11 @@ class Image(models.Model):
 
 
 # Signal to delete the image file after the object is deleted.
-@receiver(post_delete, sender=Image)
-def delete_image_file_on_delete(sender, instance, **kwargs):
-    """
-    Signal receiver to delete the image file from the filesystem when an Image instance is deleted.
-    """
-    if instance.image_file:
-        if os.path.isfile(instance.image_file.path):
-            os.remove(instance.image_file.path)
+# @receiver(post_delete, sender=Image)
+# def delete_image_file_on_delete(sender, instance, **kwargs):
+#     """
+#     Signal receiver to delete the image file from the filesystem when an Image instance is deleted.
+#     """
+#     if instance.image_file:
+#         if os.path.isfile(instance.image_file.path):
+#             os.remove(instance.image_file.path)
